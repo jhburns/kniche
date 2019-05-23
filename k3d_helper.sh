@@ -14,3 +14,6 @@ done
 # Sets both bash and fish var
 export KUBECONFIG=/home/hat/.config/k3d/k3s-default/kubeconfig.yaml
 echo "set -Ux KUBECONFIG /home/hat/.config/k3d/k3s-default/kubeconfig.yaml" | fish
+
+
+
