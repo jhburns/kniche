@@ -49,18 +49,18 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: traefik-ingress-lb
+    app: traefik-ingress-lb
   name: traefik-ingress-controller
   namespace: kube-system
 spec:
   replicas: 2
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-lb
+      app: traefik-ingress-lb
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb
+        app: traefik-ingress-lb
         name: traefik-ingress-lb
     spec:
       containers:
@@ -106,7 +106,7 @@ metadata:
   namespace: kube-system
 spec:
   selector:
-    k8s-app: traefik-ingress-lb
+    app: traefik-ingress-lb
   ports:
   - protocol: TCP
     port: 80
