@@ -12,6 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ------------------- Dashboard Secrets ------------------- #
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-certs
+  namespace: kube-system
+type: Opaque
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-csrf
+  namespace: kube-system
+type: Opaque
+data:
+  csrf: ""
+
+---
 # ------------------- Dashboard Service Account ------------------- #
 
 apiVersion: v1
@@ -154,6 +179,12 @@ rules:
   - get
   - list
   - watch
+- apiGroups: # Dangerous
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
 
 
 ---
