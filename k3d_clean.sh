@@ -2,6 +2,9 @@
 
 # IMPORTANT: Makes sure the ingress controller containers can go somewhere
 kubectl label nodes k3d-k3s-default-worker-0 type=entry
+kubectl label node k3d-k3s-default-server node-role.kubernetes.io/master=true
+kubectl taint nodes k3d-k3s-default-server node-role.kubernetes.io/master=:NoSchedule
+
 
 kubectl delete service traefik --namespace=kube-system
 kubectl delete deploy traefik --namespace=kube-system

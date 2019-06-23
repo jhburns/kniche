@@ -12,33 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ------------------- Dashboard Secrets ------------------- #
-
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard-certs
-  namespace: kube-system
-type: Opaque
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard-csrf
-  namespace: kube-system
-type: Opaque
-data:
-  csrf: ""
-
----
 # ------------------- Dashboard Service Account ------------------- #
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -49,8 +23,6 @@ metadata:
 
 ---
 # ------------------- Dashboard Role & Role Binding ------------------- #
-
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -179,13 +151,9 @@ rules:
   - get
   - list
   - watch
-- apiGroups: # Dangerous
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-
+- apiGroups: [""] # Dangerous, a VERY dirty hack needed for now
+  resources: ["secrets"]
+  verbs: ["create"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -205,7 +173,6 @@ subjects:
 
 ---
 # ------------------- Dashboard Deployment ------------------- #
-
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -258,7 +225,6 @@ spec:
 
 ---
 # ------------------- Dashboard Service ------------------- #
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -281,8 +247,10 @@ metadata:
   name: kubernetes-dashboard
   namespace: kube-system
   annotations:
-    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
     kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+    ingress.kubernetes.io/custom-request-headers: "l5d-dst-override: kubernetes-dashboard.kube-system.svc.cluster.local:80"
+    ingress.kubernetes.io/custom-response-headers: "l5d-remote-ip: || l5d-server-id:"
 spec:
   rules:
   - http:
