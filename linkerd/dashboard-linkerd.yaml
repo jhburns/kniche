@@ -12,7 +12,7 @@ metadata:
     traefik.ingress.kubernetes.io/auth-secret: "mysecret"
 spec:
   rules:
-    - host: linkerd.localhost
+    - host: linkerd.juxtsearch.com
       http:
         paths:
         - path: /
