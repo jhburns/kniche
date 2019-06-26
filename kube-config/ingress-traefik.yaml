@@ -81,6 +81,8 @@ spec:
         - containerPort: 8080 # Default port for /ping
           name: traefik
           protocol: TCP
+        - name: websecure
+          containerPort: 4443
         livenessProbe:
           httpGet:
             path: /ping
@@ -112,4 +114,8 @@ spec:
     port: 80
     nodePort: 30666 # Standard port, shouldn't change
     name: web
+  - protocol: TCP
+    port: 4443
+    nodePort: 30777 # Standard port, shouldn't change
+    name: websecure
   type: NodePort
