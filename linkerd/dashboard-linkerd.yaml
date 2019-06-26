@@ -13,7 +13,7 @@ metadata:
     traefik.ingress.kubernetes.io/priority: "77"
 spec:
   rules:
-    - host: linkerd.juxtsearch.com
+    - host: linkerd.juxtasearch.com
       http:
         paths:
         - path: /
