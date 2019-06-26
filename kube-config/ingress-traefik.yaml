@@ -81,8 +81,9 @@ spec:
         - containerPort: 8080 # Default port for /ping
           name: traefik
           protocol: TCP
-        - name: websecure
-          containerPort: 443
+        - containerPort: 443
+          name: websecure
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /ping
