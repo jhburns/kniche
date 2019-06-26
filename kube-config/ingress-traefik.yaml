@@ -72,6 +72,9 @@ spec:
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
+        - "--defaultentrypoints=http,https"
+        - "--entrypoints=Name:https Address::443 TLS"
+        - "--entrypoints=Name:http Address::80"
         image: traefik:1.7.11
         name: traefik-ingress-lb
         ports:
