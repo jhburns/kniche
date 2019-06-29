@@ -68,7 +68,6 @@ spec:
         - "--api"
         - "--accesslog"
         - "--providers.kubernetescrd"
-        - "--providers.kubernetescrd.trace"
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
