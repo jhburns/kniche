@@ -73,7 +73,7 @@ spec:
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
         - "--entrypoints.web.Address=:80"
-        "- --entrypoints.websecure.Address=:443"
+        - "--entrypoints.websecure.Address=:443"
         - "--acme"
         - "--acme.acmelogging"
         - "--acme.tlschallenge"
