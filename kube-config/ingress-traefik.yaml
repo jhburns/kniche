@@ -53,7 +53,7 @@ metadata:
   name: traefik-ingress-controller
   namespace: kube-system
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: traefik-ingress-lb
@@ -84,7 +84,7 @@ spec:
         # Please note that this is the staging Let's Encrypt server.
         # Once you get things working, you should remove that whole line altogether.
         - "--acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-        image: traefik:1.7.11
+        image: traefik:v2.0
         name: traefik-ingress-lb
         ports:
         - containerPort: 80
