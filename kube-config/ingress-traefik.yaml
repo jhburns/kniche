@@ -66,9 +66,9 @@ spec:
       containers:
       - args:
         - "--api"
-        - "--kubernetes"
-        - "--logLevel=DEBUG"
-        - "--traefikLog.format=json"
+        - "--accesslog"
+        - "--providers.kubernetescrd"
+        - "--providers.kubernetescrd.trace"
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
