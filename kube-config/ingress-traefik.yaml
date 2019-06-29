@@ -72,9 +72,8 @@ spec:
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
-        - "--defaultentrypoints=http,https"
-        - "--entrypoints=Name:https Address::443 TLS"
-        - "--entrypoints=Name:http Address::80"
+        - "--entrypoints.web.Address=:80"
+        "- --entrypoints.websecure.Address=:443"
         - "--acme"
         - "--acme.acmelogging"
         - "--acme.tlschallenge"
@@ -84,7 +83,7 @@ spec:
         - "--acme.storage=acme.json"
         # Please note that this is the staging Let's Encrypt server.
         # Once you get things working, you should remove that whole line altogether.
-        - --acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        - "--acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
         image: traefik:1.7.11
         name: traefik-ingress-lb
         ports:
