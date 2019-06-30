@@ -49,42 +49,44 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: traefik-ingress-lb
+    app: traefik-ingress
   name: traefik-ingress-controller
   namespace: kube-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: traefik-ingress-lb
+      app: traefik-ingress
   template:
     metadata:
       labels:
-        app: traefik-ingress-lb
-        name: traefik-ingress-lb
+        app: traefik-ingress
+        name: traefik-ingress
     spec:
       containers:
       - args:
         - "--api"
-        - "--accesslog"
-        - "--providers.kubernetescrd"
+        - "--kubernetes"
+        - "--logLevel=DEBUG"
+        - "--traefikLog.format=json"
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
-        - "--entrypoints.web.Address=:80"
-        - "--entrypoints.websecure.Address=:443"
+        - "--defaultentrypoints=http,https"
+        - "--entrypoints=Name:https Address::443 TLS"
+        - "--entrypoints=Name:http Address::80"
         - "--acme"
         - "--acme.acmelogging"
         - "--acme.tlschallenge"
         - "--acme.onhostrule"
         - "--acme.email=jburns867@gmail.com"
-        - "--acme.entrypoint=websecure"
+        - "--acme.entrypoint=https"
         - "--acme.storage=acme.json"
         # Please note that this is the staging Let's Encrypt server.
         # Once you get things working, you should remove that whole line altogether.
-        - "--acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-        image: traefik:v2.0
-        name: traefik-ingress-lb
+        - --acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        image: traefik:1.7.11
+        name: traefik-ingress
         ports:
         - containerPort: 80
           name: http
@@ -120,7 +122,7 @@ metadata:
   namespace: kube-system
 spec:
   selector:
-    app: traefik-ingress-lb
+    app: traefik-ingress
   ports:
   - protocol: TCP
     port: 80
