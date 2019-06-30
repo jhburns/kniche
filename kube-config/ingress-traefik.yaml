@@ -68,7 +68,7 @@ spec:
         - "--api"
         - "--kubernetes"
         - "--logLevel=DEBUG"
-        - "--traefikLog.format=json"
+        - "--traefikLog.format=common"
         - "--ping"
         - "--ping.entrypoint=traefik"
         - "--api.dashboard"
