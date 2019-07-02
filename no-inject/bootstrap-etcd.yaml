@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: traefik-bootstrap
+  namespace: kube-system
+spec:
+  template:
+    metadata:
+      name: traefik-bootstrap
+    spec:
+      containers:
+      - name: traefik-bootstrap
+        image: traefik:1.7.12
+        args:
+        - "storeconfig"
+        - "--kubernetes"
+        - "--logLevel=DEBUG"
+        - "--etcd"
+        - "--etcd.useapiv3"
+        - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
+        - "--acme"
+        - "--acme.storage=traefik/acme/account"
+      restartPolicy: Never

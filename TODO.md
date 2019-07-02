@@ -10,6 +10,6 @@
 
 # Notepad
 
-kubectl -n linkerd port-forward (kubectl -n linkerd get pod -l app=l5d -o jsonpath='{.items[0].metadata.name}') 9990
+kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name --all-namespaces
 
 > The best command in existence
