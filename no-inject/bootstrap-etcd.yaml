@@ -1,6 +1,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  labels:
+    app: traefik-ingress
   name: traefik-bootstrap
   namespace: kube-system
 spec:
@@ -14,10 +16,20 @@ spec:
         args:
         - "storeconfig"
         - "--kubernetes"
+        - "--api"
+        - "--api.dashboard"
+        - "--logLevel=DEBUG"
+        - "--traefikLog.format=common"
+        - "--ping"
+        - "--ping.entrypoint=traefik"
+        - "--defaultentrypoints=http,https"
+        - "--entrypoints=Name:https Address::443 TLS"
+        - "--entrypoints=Name:http Address::80"
         - "--logLevel=DEBUG"
         - "--etcd"
         - "--etcd.useapiv3"
         - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
+        - "--etcd.prefix=/traefik"
         - "--acme"
         - "--acme.acmelogging"
         - "--acme.tlschallenge"
@@ -29,3 +41,10 @@ spec:
         # Once you get things working, you should remove that whole line altogether.
         - "--acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       restartPolicy: Never
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: websecure
+        protocol: TCP

@@ -65,19 +65,10 @@ spec:
     spec:
       containers:
       - args:
-        - "--api"
-        - "--kubernetes"
-        - "--logLevel=DEBUG"
-        - "--traefikLog.format=common"
-        - "--ping"
-        - "--ping.entrypoint=traefik"
-        - "--api.dashboard"
-        - "--defaultentrypoints=http,https"
-        - "--entrypoints=Name:https Address::443 TLS"
-        - "--entrypoints=Name:http Address::80"
         - "--etcd"
         - "--etcd.useapiv3"
         - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
+        - "--etcd.prefix=/traefik"
         image: traefik:1.7.12
         name: traefik-ingress
         ports:
