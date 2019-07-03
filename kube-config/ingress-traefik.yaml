@@ -63,6 +63,11 @@ spec:
         app: traefik-ingress
         name: traefik-ingress
     spec:
+      volumes:
+      - name: acme
+        hostPath:
+          path: /srv/config/acme/
+          type: DirectoryOrCreate
       containers:
       - args:
         - "--kubernetes"
@@ -82,7 +87,7 @@ spec:
         - "--acme.onhostrule"
         - "--acme.email=jburns867@gmail.com"
         - "--acme.entrypoint=https"
-        - "--acme.storage=acme.json"
+        - "--acme.storage=/srv/config/acme/acme.json"
         # Please note that this is the staging Let's Encrypt server.
         # Once you get things working, you should remove that whole line altogether.
         - "--acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
@@ -108,19 +113,15 @@ spec:
           httpGet:
             path: /ping
             port: 8080
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        volumeMounts:
+        - mountPath: /srv/config/acme/
+          name: acme
       nodeSelector:
         type: entry
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
-      volumes:
-      - name: acme
-        hostPath:
-          path: /srv/configs/acme.json
-      volumeMounts:
-      - mountPath: /acme.json
-        name: acme
 
 ---
 kind: Service
