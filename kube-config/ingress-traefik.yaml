@@ -79,7 +79,8 @@ spec:
         - "--ping.entrypoint=traefik"
         - "--defaultentrypoints=http,https"
         - "--entrypoints=Name:https Address::443 TLS"
-        - "--entrypoints=Name:http Address::80"
+        - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+        #- "--entrypoints=Name:http Address::80" no redirect for local testing
         - "--logLevel=DEBUG"
         - "--acme"
         - "--acme.tlschallenge"
