@@ -5,7 +5,6 @@
 - kustomize templating
 - Terraform + packer + ansible automatic build/deploy
 - Documentation
-- CPU/Memory usage*
 
 
 # Notepad

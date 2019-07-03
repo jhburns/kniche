@@ -53,7 +53,7 @@ metadata:
   name: traefik-ingress-controller
   namespace: kube-system
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: traefik-ingress
@@ -66,9 +66,9 @@ spec:
       containers:
       - args:
         - "--etcd"
-        - "--etcd.useapiv3"
         - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
         - "--etcd.prefix=/traefik"
+        - "--acme.tlschallenge"
         image: traefik:1.7.12
         name: traefik-ingress
         ports:
