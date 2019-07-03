@@ -114,6 +114,13 @@ spec:
         type: entry
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
+      volumes:
+      - name: acme
+        hostPath:
+          path: /srv/configs/acme.json
+      volumeMounts:
+      - mountPath: /acme.json
+        name: acme
 
 ---
 kind: Service
