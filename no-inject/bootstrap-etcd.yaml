@@ -28,6 +28,7 @@ spec:
         - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
         - "--etcd.prefix=/traefik"
         - "--acme"
+        - "--acme.tlschallenge"
         - "--etcd.useapiv3"
         - "--acme.acmelogging"
         - "--acme.onhostrule"
