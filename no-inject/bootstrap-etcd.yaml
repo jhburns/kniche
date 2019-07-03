@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: traefik-bootstrap
-        image: traefik:1.7.12
+        image: traefik:1.6.3
         args:
         - "storeconfig"
         - "--kubernetes"
@@ -25,11 +25,11 @@ spec:
         - "--entrypoints=Name:http Address::80"
         - "--logLevel=DEBUG"
         - "--etcd"
+        - "--etcd.useapiv3"
         - "--etcd.endpoint=etcd-client.etcd.svc.cluster.local:2379"
         - "--etcd.prefix=/traefik"
         - "--acme"
         - "--acme.tlschallenge"
-        - "--etcd.useapiv3"
         - "--acme.acmelogging"
         - "--acme.onhostrule"
         - "--acme.email=jburns867@gmail.com"
