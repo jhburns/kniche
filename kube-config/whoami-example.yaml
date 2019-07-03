@@ -53,7 +53,8 @@ metadata:
     traefik.ingress.kubernetes.io/priority: "77"
 spec:
   rules:
-  - http:
+  - host: juxtasearch.com
+    http:
       paths:
       - path: /whoami
         backend:
