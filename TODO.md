@@ -2,7 +2,7 @@
 
 - Lets encrypt automatic SSL
 - Basic app at root
-- kustomize templating
+- kustomize templating, make haproxy less specific 
 - Terraform + packer + ansible automatic build/deploy
 - Documentation
 
