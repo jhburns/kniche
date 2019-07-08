@@ -4,4 +4,8 @@ packer_cache/
 # For built boxes
 *.box
 
+# Generated username/password files
 secrets/
+
+# Webstorm
+.idea/
