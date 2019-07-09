@@ -4,6 +4,8 @@ packer_cache/
 # For built boxes
 *.box
 
+packer
+
 # Generated username/password files
 secrets/
 
