@@ -9,3 +9,11 @@ secrets/
 
 # Webstorm
 .idea/
+
+# Terraform
+**/.terraform/*
+
+*.tfstate
+*.tfstate.*
+
+crash.log
