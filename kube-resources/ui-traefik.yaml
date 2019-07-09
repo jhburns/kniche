@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+spec:
+  selector:
+    app: traefik-ingress
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+    ingress.kubernetes.io/custom-request-headers: "l5d-dst-override: traefik-web-ui.kube-system.svc.cluster.local:80"
+    ingress.kubernetes.io/custom-response-headers: "l5d-remote-ip: || l5d-server-id:"
+    traefik.ingress.kubernetes.io/auth-type: "basic"
+    traefik.ingress.kubernetes.io/auth-secret: "mysecret"
+    traefik.ingress.kubernetes.io/priority: "77"
+spec:
+  rules:
+  - host: juxtasearch.com
+    http:
+      paths:
+      - path: /traefik
+        backend:
+          serviceName: traefik-web-ui
+          servicePort: web

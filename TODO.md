@@ -11,3 +11,5 @@
 kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name --all-namespaces
 
 > The best command in existence
+
+>>>> Don't forget to issue a new API key
