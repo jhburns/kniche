@@ -1,0 +1,27 @@
+{
+  "variables": {
+    "vultr_api_key": ""
+  },
+  "builders": [
+    {
+      "type": "vultr",
+      "name": "ok",
+      "api_key": "{{user `vultr_api_key`}}",
+      "description": "ExampleOk",
+      "region_name": "Silicon Valley",
+      "plan_name": "1024 MB RAM,25 GB SSD,1.00 TB BW",
+      "os_name": "Ubuntu 19.04 x64",
+      "ssh_username": "root"
+    },
+    {
+      "type": "vultr",
+      "name": "waa",
+      "api_key": "{{user `vultr_api_key`}}",
+      "description": "ExampleWaa",
+      "region_name": "Silicon Valley",
+      "plan_name": "1024 MB RAM,25 GB SSD,1.00 TB BW",
+      "os_name": "Ubuntu 19.04 x64",
+      "ssh_username": "root"
+    }
+  ]
+}
