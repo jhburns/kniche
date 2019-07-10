@@ -1,0 +1,25 @@
+---
+- hosts: master
+  remote_user: root
+  tasks:
+  - name: Install the package "cowsay"
+    apt:
+      name: cowsay
+      state: latest
+      force_apt_get: yes
+- hosts: entry
+  remote_user: root
+  tasks:
+  - name: Install the package "cowsay"
+    apt:
+      name: cowsay
+      state: latest
+      force_apt_get: yes
+- hosts: worker
+  remote_user: root
+  tasks:
+  - name: Install the package "cowsay"
+    apt:
+      name: cowsay
+      state: latest
+      force_apt_get: yes

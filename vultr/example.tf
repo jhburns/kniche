@@ -1,7 +1,21 @@
 // Configure the Vultr provider.
 // Alternatively, export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
 provider "vultr" {
-  api_key = "KEHHILY6FM5P272CCGX3YKIXOQI4AUR2WR3A" // Move this to enviroment
+  api_key = "K7K37WTS43MK3KWA4HWG7BQQ6BVGH6HE6QRQ" // Move this to enviroment
+}
+
+// Find the snapshot ID for a Kubernetes master.
+data "vultr_snapshot" "master" {
+  description_regex = "master"
+}
+
+
+data "vultr_snapshot" "entry" {
+  description_regex = "entry"
+}
+
+data "vultr_snapshot" "worker" {
+  description_regex = "worker"
 }
 
 // Find the ID of the Silicon Valley region.
@@ -9,15 +23,6 @@ data "vultr_region" "silicon_valley" {
   filter {
     name   = "name"
     values = ["Silicon Valley"]
-  }
-}
-
-// Find the ID for CoreOS Container Linux.
-data "vultr_os" "container_linux" {
-  filter {
-    name   = "name"
-    values = ["Ubuntu 19.04 x64"] // gotten via 'curl https://api.vultr.com/v1/os/list'
-
   }
 }
 
@@ -34,25 +39,38 @@ data "vultr_plan" "starter" {
   }
 }
 
-// Find the ID of an existing SSH key.
-data "vultr_ssh_key" "premade" {
-  filter {
-    name   = "name"
-    values = ["Laptob"]
-  }
-}
 
-// Create a Vultr virtual machine.
-resource "vultr_instance" "example" {
-  name              = "example"
+// Create a Vultr virtual machine cluster.
+resource "vultr_instance" "master" {
+  name              = "master"
   region_id         = "${data.vultr_region.silicon_valley.id}"
   plan_id           = "${data.vultr_plan.starter.id}"
-  os_id             = "${data.vultr_os.container_linux.id}"
-  ssh_key_ids       = ["${data.vultr_ssh_key.premade.id}"]
-  hostname          = "example"
-  tag               = "container-linux"
+  snapshot_id       = "${data.vultr_snapshot.master.id}"
+  hostname          = "master"
+  tag               = "k3s-master"
   firewall_group_id = "${vultr_firewall_group.example.id}"
 }
+
+resource "vultr_instance" "entry" {
+  name              = "entry"
+  region_id         = "${data.vultr_region.silicon_valley.id}"
+  plan_id           = "${data.vultr_plan.starter.id}"
+  snapshot_id       = "${data.vultr_snapshot.entry.id}"
+  hostname          = "entry"
+  tag               = "k3s-worker-entry"
+  firewall_group_id = "${vultr_firewall_group.example.id}"
+}
+
+resource "vultr_instance" "worker" {
+  name              = "worker"
+  region_id         = "${data.vultr_region.silicon_valley.id}"
+  plan_id           = "${data.vultr_plan.starter.id}"
+  snapshot_id       = "${data.vultr_snapshot.worker.id}"
+  hostname          = "worker"
+  tag               = "k3s-worker"
+  firewall_group_id = "${vultr_firewall_group.example.id}"
+}
+
 
 // Create a new firewall group.
 resource "vultr_firewall_group" "example" {

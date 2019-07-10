@@ -1,9 +1,0 @@
----
-- hosts: default
-  remote_user: root
-  tasks:
-  - name: Install the package "cowsay"
-    apt:
-      name: cowsay
-      state: latest
-      force_apt_get: yes

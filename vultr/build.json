@@ -5,16 +5,49 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "./main.yaml",
-      "inventory_directory": "./"
+      "playbook_file": "./playbooks/main.yaml",
+      "host_alias": "master",
+      "only": ["master"]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "./playbooks/main.yaml",
+      "host_alias": "entry",
+      "only": ["entry"]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "./playbooks/main.yaml",
+      "host_alias": "worker",
+      "only": ["worker"]
     }
   ],
   "builders": [
     {
       "type": "vultr",
-      "name": "1",
+      "name": "master",
       "api_key": "{{user `vultr_api_key`}}",
-      "description": "Example1",
+      "description": "master",
+      "region_name": "Silicon Valley",
+      "plan_name": "1024 MB RAM,25 GB SSD,1.00 TB BW",
+      "os_name": "Ubuntu 19.04 x64",
+      "ssh_username": "root"
+    },
+    {
+      "type": "vultr",
+      "name": "entry",
+      "api_key": "{{user `vultr_api_key`}}",
+      "description": "entry",
+      "region_name": "Silicon Valley",
+      "plan_name": "1024 MB RAM,25 GB SSD,1.00 TB BW",
+      "os_name": "Ubuntu 19.04 x64",
+      "ssh_username": "root"
+    },
+    {
+      "type": "vultr",
+      "name": "worker",
+      "api_key": "{{user `vultr_api_key`}}",
+      "description": "worker",
       "region_name": "Silicon Valley",
       "plan_name": "1024 MB RAM,25 GB SSD,1.00 TB BW",
       "os_name": "Ubuntu 19.04 x64",
