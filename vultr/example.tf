@@ -1,7 +1,7 @@
 // Configure the Vultr provider.
 // Alternatively, export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
 provider "vultr" {
-  api_key = "KEHHILY6FM5P272CCGX3YKIXOQI4AUR2WR3A"
+  api_key = "KEHHILY6FM5P272CCGX3YKIXOQI4AUR2WR3A" // Move this to enviroment
 }
 
 // Find the ID of the Silicon Valley region.
@@ -16,7 +16,7 @@ data "vultr_region" "silicon_valley" {
 data "vultr_os" "container_linux" {
   filter {
     name   = "name"
-    values = ["Ubuntu 19.04 x64"] // gotten by 'curl https://api.vultr.com/v1/os/list'
+    values = ["Ubuntu 19.04 x64"] // gotten via 'curl https://api.vultr.com/v1/os/list'
 
   }
 }
