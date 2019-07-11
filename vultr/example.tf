@@ -85,3 +85,4 @@ resource "vultr_firewall_rule" "ssh" {
   from_port         = 22
   to_port           = 22
 }
+
