@@ -56,7 +56,7 @@ resource "vultr_instance" "master" {
   snapshot_id       = "${data.vultr_snapshot.master.id}"
   hostname          = "master"
   tag               = "k3s-master"
-  firewall_group_id = "${vultr_firewall_group.example.id}"
+  firewall_group_id = "${vultr_firewall_group.others.id}"
 }
 
 resource "vultr_instance" "entry" {
@@ -67,7 +67,7 @@ resource "vultr_instance" "entry" {
   reserved_ip       = "${data.vplus_reserved_ip.entry.id}"
   hostname          = "entry"
   tag               = "k3s-worker-entry"
-  firewall_group_id = "${vultr_firewall_group.example.id}"
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 resource "vultr_instance" "worker" {
@@ -77,21 +77,72 @@ resource "vultr_instance" "worker" {
   snapshot_id       = "${data.vultr_snapshot.worker.id}"
   hostname          = "worker"
   tag               = "k3s-worker"
-  firewall_group_id = "${vultr_firewall_group.example.id}"
+  firewall_group_id = "${vultr_firewall_group.others.id}"
 }
 
 
-// Create a new firewall group.
-resource "vultr_firewall_group" "example" {
-  description = "example group"
+// Creates 4 firewall groups, with a lot of redundancy due to the limitations of Terraform language
+resource "vultr_firewall_group" "entry_worker" {
+  description = "entry worker group, with ssh"
 }
 
-// Add a firewall rule to the group allowing SSH access.
-resource "vultr_firewall_rule" "ssh" {
-  firewall_group_id = "${vultr_firewall_group.example.id}"
+resource "vultr_firewall_rule" "entry_ssh" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
   cidr_block        = "0.0.0.0/0"
   protocol          = "tcp"
   from_port         = 22
   to_port           = 22
 }
 
+resource "vultr_firewall_rule" "entry_web" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+}
+
+resource "vultr_firewall_rule" "entry_websecure" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+}
+
+resource "vultr_firewall_group" "entry_worker_no_ssh" {
+  description = "entry worker group, without ssh"
+}
+
+resource "vultr_firewall_rule" "entry_web_no_ssh" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker_no_ssh.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+}
+
+resource "vultr_firewall_rule" "entry_websecure_no_ssh" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker_no_ssh.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+}
+
+resource "vultr_firewall_group" "others" {
+  description = "other servers group, with ssh"
+}
+
+
+resource "vultr_firewall_rule" "other_ssh" {
+  firewall_group_id = "${vultr_firewall_group.others.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 22
+  to_port           = 22
+}
+
+resource "vultr_firewall_group" "others_no_ssh" {
+  description = "other servers group, without ssh"
+}

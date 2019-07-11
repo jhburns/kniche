@@ -7,14 +7,15 @@
       name: cowsay
       state: latest
       force_apt_get: yes
+
 - hosts: entry
   remote_user: root
   tasks:
-  - name: Install the package "cowsay"
+  - name: Install the package "haproxy"
     apt:
-      name: cowsay
-      state: latest
+      name: haproxy=1.8.19-1ubuntu1
       force_apt_get: yes
+
 - hosts: worker
   remote_user: root
   tasks:

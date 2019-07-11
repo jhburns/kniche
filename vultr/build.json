@@ -5,19 +5,19 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "./playbooks/main.yaml",
+      "playbook_file": "./config.yaml",
       "host_alias": "master",
       "only": ["master"]
     },
     {
       "type": "ansible",
-      "playbook_file": "./playbooks/main.yaml",
+      "playbook_file": "./config.yaml",
       "host_alias": "entry",
       "only": ["entry"]
     },
     {
       "type": "ansible",
-      "playbook_file": "./playbooks/main.yaml",
+      "playbook_file": "./config.yaml",
       "host_alias": "worker",
       "only": ["worker"]
     }
