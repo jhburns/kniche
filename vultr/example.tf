@@ -4,6 +4,14 @@ provider "vultr" {
   api_key = "K7K37WTS43MK3KWA4HWG7BQQ6BVGH6HE6QRQ" // Move this to enviroment
 }
 
+provider "vplus" {
+  api_key = "K7K37WTS43MK3KWA4HWG7BQQ6BVGH6HE6QRQ"
+}
+
+data "vplus_reserved_ip" "entry" {
+  name = "entry"
+}
+
 // Find the snapshot ID for a Kubernetes master.
 data "vultr_snapshot" "master" {
   description_regex = "master"
@@ -56,6 +64,7 @@ resource "vultr_instance" "entry" {
   region_id         = "${data.vultr_region.silicon_valley.id}"
   plan_id           = "${data.vultr_plan.starter.id}"
   snapshot_id       = "${data.vultr_snapshot.entry.id}"
+  reserved_ip       = "${data.vplus_reserved_ip.entry.id}"
   hostname          = "entry"
   tag               = "k3s-worker-entry"
   firewall_group_id = "${vultr_firewall_group.example.id}"
