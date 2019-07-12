@@ -15,6 +15,14 @@
     apt:
       name: haproxy=1.8.19-1ubuntu1
       force_apt_get: yes
+  - name: Configure haproxy
+    copy: src=../haproxy/haproxy.cfg dest=/etc/haproxy/haproxy.cfg
+    notify: Restart haproxy
+  handlers:
+    - name: Restart haproxy
+      service:
+        name: haproxy
+        state: restarted
 
 - hosts: worker
   remote_user: root
@@ -24,3 +32,4 @@
       name: cowsay
       state: latest
       force_apt_get: yes
+

@@ -81,7 +81,7 @@ resource "vultr_instance" "worker" {
 }
 
 
-// Creates 4 firewall groups, with a lot of redundancy due to the limitations of Terraform language
+// Creates 4 firewall groups, with a lot of redundancy due to the limitations of HCL
 resource "vultr_firewall_group" "entry_worker" {
   description = "entry worker group, with ssh"
 }
