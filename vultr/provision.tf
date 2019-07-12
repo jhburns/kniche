@@ -56,7 +56,7 @@ resource "vultr_instance" "master" {
   snapshot_id       = "${data.vultr_snapshot.master.id}"
   hostname          = "master"
   tag               = "k3s-master"
-  firewall_group_id = "${vultr_firewall_group.others.id}"
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 resource "vultr_instance" "entry" {
@@ -77,7 +77,7 @@ resource "vultr_instance" "worker" {
   snapshot_id       = "${data.vultr_snapshot.worker.id}"
   hostname          = "worker"
   tag               = "k3s-worker"
-  firewall_group_id = "${vultr_firewall_group.others.id}"
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 
@@ -110,6 +110,14 @@ resource "vultr_firewall_rule" "entry_websecure" {
   to_port           = 443
 }
 
+resource "vultr_firewall_rule" "entry_flannel" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "udp"
+  from_port         = 8472
+  to_port           = 8472
+}
+
 resource "vultr_firewall_group" "entry_worker_no_ssh" {
   description = "entry worker group, without ssh"
 }
@@ -130,6 +138,15 @@ resource "vultr_firewall_rule" "entry_websecure_no_ssh" {
   to_port           = 443
 }
 
+resource "vultr_firewall_rule" "entry_flannel_no_ssh" {
+  firewall_group_id = "${vultr_firewall_group.entry_worker_no_ssh.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "udp"
+  from_port         = 8472
+  to_port           = 8472
+}
+
+
 resource "vultr_firewall_group" "others" {
   description = "other servers group, with ssh"
 }
@@ -143,6 +160,38 @@ resource "vultr_firewall_rule" "other_ssh" {
   to_port           = 22
 }
 
+resource "vultr_firewall_rule" "other_server" {
+  firewall_group_id = "${vultr_firewall_group.others.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 6443
+  to_port           = 6443
+}
+
+resource "vultr_firewall_rule" "other_flannel" {
+  firewall_group_id = "${vultr_firewall_group.others.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "udp"
+  from_port         = 8472
+  to_port           = 8472
+}
+
 resource "vultr_firewall_group" "others_no_ssh" {
   description = "other servers group, without ssh"
+}
+
+resource "vultr_firewall_rule" "other_server_no_ssh" {
+  firewall_group_id = "${vultr_firewall_group.others_no_ssh.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "tcp"
+  from_port         = 6443
+  to_port           = 6443
+}
+
+resource "vultr_firewall_rule" "other_flannel_no_ssh" {
+  firewall_group_id = "${vultr_firewall_group.others_no_ssh.id}"
+  cidr_block        = "0.0.0.0/0"
+  protocol          = "udp"
+  from_port         = 8472
+  to_port           = 8472
 }
