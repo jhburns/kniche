@@ -3,7 +3,7 @@
 1. Ansible automatic build/deploy
     - terraform env  
     - Clustering
-    - install linkerd + k3s for each
+    - install linkerd/k3s for each
 1. Basic app at root
     - steal matteos?
 1. kustomize templating

@@ -6,7 +6,7 @@ packer_cache/
 
 packer
 
-# Generated username/password files
+# Generated username/password files etc
 secrets/
 
 # Webstorm
