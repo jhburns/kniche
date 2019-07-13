@@ -1,12 +1,13 @@
 ## Todo
 
 1. Ansible automatic build/deploy
-    - terraform env  
-    - Clustering
-    - k3s for each
+    - worker nodes join
+    - kubernetes setup
 1. Basic app at root
     - steal matteos?
 1. kustomize templating
+    - url
+    - ACME staging
 1. Documentation
 1. Docker install bundler
 

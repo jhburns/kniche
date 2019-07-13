@@ -33,6 +33,10 @@
       daemon_reload: yes
       state: restarted
       enabled: yes
+  - name: Install the package "htpasswd"
+    apt:
+      name: apache2-utils=2.4.38-2ubuntu2
+      force_apt_get: yes
 
 - hosts: entry, worker
   remote_user: root
