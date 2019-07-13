@@ -1,12 +1,6 @@
-// Configure the Vultr provider.
-// Alternatively, export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
-provider "vultr" {
-  api_key = "K7K37WTS43MK3KWA4HWG7BQQ6BVGH6HE6QRQ" // Move this to enviroment
-}
-
-provider "vplus" {
-  api_key = "K7K37WTS43MK3KWA4HWG7BQQ6BVGH6HE6QRQ"
-}
+// Configure the Vultr and Vplus providers.
+// Export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
+// (`env VULTR_API_KEY=<your-vultr-api-key> terraform plan` for example in fish)
 
 data "vplus_reserved_ip" "entry" {
   name = "entry"

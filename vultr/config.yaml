@@ -8,11 +8,18 @@
       dest: /usr/local/bin/k3s
       owner: root
       group: root
-      mode: 755
+      mode: 0755
 
 - hosts: master
   remote_user: root
   tasks:
+  - name: Download linkerd binary x64
+    get_url:
+      url: https://github.com/linkerd/linkerd2/releases/download/stable-2.3.1/linkerd2-cli-stable-2.3.1-linux
+      dest: /usr/local/bin/linkerd
+      owner: root
+      group: root
+      mode: 0755
   - name: Copy over k3s system file
     copy:
       src: k3s.service
@@ -27,6 +34,14 @@
       state: restarted
       enabled: yes
 
+- hosts: entry, worker
+  remote_user: root
+  tasks:
+  - name: Install the package "cowsay"
+    apt:
+      name: cowsay
+      state: latest
+      force_apt_get: yes
 
 - hosts: entry
   remote_user: root
