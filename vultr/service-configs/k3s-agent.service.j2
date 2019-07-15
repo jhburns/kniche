@@ -4,18 +4,19 @@ Documentation=https://k3s.io
 After=network.target
 
 [Service]
+Type=notify
+EnvironmentFile=/etc/systemd/system/k3s-agent.service.env
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
-ExecStart=/usr/local/bin/k3s \
-    server \
-	'--no-deploy' \
-	'traefik' \
+ExecStart=/usr/local/bin/k3s agent
 KillMode=process
 Delegate=yes
 LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitCORE=infinity
 TasksMax=infinity
+TimeoutStartSec=0
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

@@ -1,16 +1,16 @@
-// Configure the Vultr and Vplus providers.
-// Export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
-// (`env VULTR_API_KEY=<your-vultr-api-key> terraform plan` for example in fish)
+# Configure the Vultr and Vplus providers.
+# Export the API key as an environment variable: `export VULTR_API_KEY=<your-vultr-api-key>`.
+# (`env VULTR_API_KEY=<your-vultr-api-key> terraform plan` for example in fish)
 
+# Custom provider just to fetch the pre-reserved IP address
 data "vplus_reserved_ip" "entry" {
   name = "entry"
 }
 
-// Find the snapshot ID for a Kubernetes master.
+# Find the snapshot ID for a Kubernetes master, entry, and worker nodes.
 data "vultr_snapshot" "master" {
   description_regex = "master"
 }
-
 
 data "vultr_snapshot" "entry" {
   description_regex = "entry"
@@ -20,7 +20,7 @@ data "vultr_snapshot" "worker" {
   description_regex = "worker"
 }
 
-// Find the ID of the Silicon Valley region.
+# Find the ID of the Silicon Valley region.
 data "vultr_region" "silicon_valley" {
   filter {
     name   = "name"
@@ -28,7 +28,7 @@ data "vultr_region" "silicon_valley" {
   }
 }
 
-// Find the ID for a starter plan.
+# Find the ID for a starter plan.
 data "vultr_plan" "starter" {
   filter {
     name   = "price_per_month"
@@ -42,7 +42,7 @@ data "vultr_plan" "starter" {
 }
 
 
-// Create a Vultr virtual machine cluster.
+# Create a Vultr virtual machine cluster.
 resource "vultr_instance" "master" {
   name              = "master"
   region_id         = "${data.vultr_region.silicon_valley.id}"
@@ -50,7 +50,6 @@ resource "vultr_instance" "master" {
   snapshot_id       = "${data.vultr_snapshot.master.id}"
   hostname          = "master"
   tag               = "k3s-master"
-  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 resource "vultr_instance" "entry" {
@@ -58,10 +57,9 @@ resource "vultr_instance" "entry" {
   region_id         = "${data.vultr_region.silicon_valley.id}"
   plan_id           = "${data.vultr_plan.starter.id}"
   snapshot_id       = "${data.vultr_snapshot.entry.id}"
-  reserved_ip       = "${data.vplus_reserved_ip.entry.id}"
+  reserved_ip       = "${data.vplus_reserved_ip.entry.id}" # Using our custom data source here
   hostname          = "entry"
   tag               = "k3s-worker-entry"
-  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 resource "vultr_instance" "worker" {
@@ -71,11 +69,10 @@ resource "vultr_instance" "worker" {
   snapshot_id       = "${data.vultr_snapshot.worker.id}"
   hostname          = "worker"
   tag               = "k3s-worker"
-  firewall_group_id = "${vultr_firewall_group.entry_worker.id}"
 }
 
 
-// Creates 4 firewall groups, with a lot of redundancy due to the limitations of HCL
+# Creates 4 firewall groups, with a lot of redundancy due to the limitations of HCL
 resource "vultr_firewall_group" "entry_worker" {
   description = "entry worker group, with ssh"
 }

@@ -3,8 +3,6 @@
 1. Ansible automatic build/deploy
     - worker nodes join
     - kubernetes setup
-1. Basic app at root
-    - steal matteos?
 1. kustomize templating
     - url
     - ACME staging

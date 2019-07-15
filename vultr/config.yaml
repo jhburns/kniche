@@ -1,7 +1,16 @@
 ---
 - hosts: all
-  order: sorted # Same steps should be applied to each host first
   tasks:
+  - name: Change hostname to ansible host
+    hostname:
+      name: "k3s.{{ play_hosts[0] }}"
+  - name: Copy hosts file
+    template:
+      src: ./service-configs/hosts.j2
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: 0755
   - name: Download k3s binary x64
     get_url:
       url: https://github.com/rancher/k3s/releases/download/v0.6.1/k3s
@@ -9,10 +18,19 @@
       owner: root
       group: root
       mode: 0755
+  - name: Create k3s env file
+    copy:
+      content: ""
+      dest: /etc/systemd/system/k3s.service.env
 
 - hosts: master
   remote_user: root
   tasks:
+  - name: Delete previous session's master output # A bit of cheese so that worker, entry wait properly
+    local_action:                                 # Chance this won't happen first, so delete the file manually to be safe
+      module: file
+      path: ../secrets/master_output.json
+      state: absent
   - name: Download linkerd binary x64
     get_url:
       url: https://github.com/linkerd/linkerd2/releases/download/stable-2.3.1/linkerd2-cli-stable-2.3.1-linux
@@ -22,7 +40,7 @@
       mode: 0755
   - name: Copy over k3s system file
     copy:
-      src: k3s.service
+      src: ./service-configs/k3s.service
       dest: /etc/systemd/system/k3s.service
       owner: root
       group: root
@@ -37,15 +55,60 @@
     apt:
       name: apache2-utils=2.4.38-2ubuntu2
       force_apt_get: yes
+  - name: Read node-token from master
+    slurp:
+      src: /var/lib/rancher/k3s/server/node-token
+    register: node_token
+  - name: Store Master node-token
+    set_fact:
+      token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
+  - name: Create local directory for secrets
+    local_action:
+      module: file
+      path: ../secrets
+      state: directory
+  - name: Save all facts locally
+    local_action:
+        module: copy
+        content: "{{ vars | to_nice_json }}"
+        dest: "../secrets/master_output.json"
+  - name: Wait so other servers can connect
+    command: k3s kubectl get nodes
+    register: cmd_res
+    retries: 100
+    delay: 10
+    until: cmd_res.stdout_lines | list | count == 4
 
 - hosts: entry, worker
   remote_user: root
   tasks:
-  - name: Install the package "cowsay"
-    apt:
-      name: cowsay
-      state: latest
-      force_apt_get: yes
+  - name: Wait for master to create output file
+    local_action:
+      module: wait_for
+      path: ../secrets/master_output.json
+  - name: Load master's output
+    include_vars:
+      file: ../secrets/master_output.json
+      name: master_vars
+  - name: Copy K3s service file
+    template:
+      src: ./service-configs/k3s-agent.service.j2
+      dest: /etc/systemd/system/k3s-agent.service
+      owner: root
+      group: root
+      mode: 0755
+  - name: Copy K3s enviroment file
+    template:
+      src: ./service-configs/k3s-agent.service.env.j2
+      dest: /etc/systemd/system/k3s-agent.service.env
+      owner: root
+      group: root
+      mode: 0755
+  - name: Enable and check K3s service
+    systemd:
+      name: k3s-agent
+      state: restarted
+      enabled: yes
 
 - hosts: entry
   remote_user: root
