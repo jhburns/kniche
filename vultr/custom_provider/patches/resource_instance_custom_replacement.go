@@ -108,8 +108,8 @@ func resourceInstance() *schema.Resource {
 			},
 
 			"reserved_ip": {
-			    Type:     schema.TypeString,
-			    Optional: true,
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 
 			"name": {
