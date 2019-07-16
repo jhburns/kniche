@@ -13,7 +13,8 @@ do
 done
 
 # Sets both bash and fish var
-# Shell specific, change to reflect yours
+# Shell specific, change to reflect shells you use
+# Also change the path to your $HOME
 export KUBECONFIG=/home/hat/.config/k3d/k3s-default/kubeconfig.yaml
 echo "set -Ux KUBECONFIG /home/hat/.config/k3d/k3s-default/kubeconfig.yaml" | fish
 

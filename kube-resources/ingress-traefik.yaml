@@ -80,13 +80,13 @@ spec:
         - "--defaultentrypoints=http,https"
         - "--entrypoints=Name:https Address::443 TLS"
         - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-        #- "--entrypoints=Name:http Address::80" no redirect for local testing
+        #- "--entrypoints=Name:http Address::80" #no redirect for local testing
         - "--logLevel=DEBUG"
         - "--acme"
         - "--acme.tlschallenge"
         - "--acme.acmelogging"
         - "--acme.onhostrule"
-        - "--acme.email=jburns867@gmail.com"
+        - "--acme.email=insert@here.com"
         - "--acme.entrypoint=https"
         - "--acme.storage=/srv/config/acme/acme.json"
         # Please note that this is the staging Let's Encrypt server.
