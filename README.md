@@ -4,7 +4,7 @@ Create a lightweight, but capable kubernetes cluster using [k3s](https://k3s.io/
 Tested on only $5/month virtual private servers (from [Vultr](https://www.vultr.com/)) and comes with these features:
 
 - [Traefik](https://traefik.io/) ingress controller for easy, fast pathing to each service. 
-  Additionally Traefik secures the cluster with free Let's Encrypt certificates, setting up https automatically.
+  Additionally, Traefik secures the cluster with free Let's Encrypt certificates, setting up https automatically.
 - Read-Only Kubernetes web dashboard, like `kubectl` but available to anyone. Useful to show-off the cluster's internals or monitor resources from anywhere.
 - [Linkerd2](https://linkerd.io/2/overview/) service mesh installed, providing features like security, and observability.
 - Automated deployment to Vultr, using Ansible + Packer + Terraform to create immutable infrastructure.
@@ -13,11 +13,11 @@ Tested on only $5/month virtual private servers (from [Vultr](https://www.vultr.
 
 ## Setup Locally
 
-First fork, then clone this repo locally.
+First fork, then clone this repository locally.
 
 Kniche is designed to run efficiently locally too, so install [Docker](https://docs.docker.com/install/) then [k3d](https://github.com/rancher/k3d). 
 k3d is service that helps run k3s in Docker, like [kind](https://github.com/kubernetes-sigs/kind) for normal Kubernetes.
-Also [install Linkerd2](https://linkerd.io/2/getting-started/).
+Also, [install Linkerd2](https://linkerd.io/2/getting-started/).
 
 After installation, if you're on Linux/MacOS the scripts in *helper_scripts/* 
 can help you get setup with a little modification. They work as follows:
@@ -43,7 +43,7 @@ The command `kubectl get pods -A` should return with all pods `Ready` if everyth
 
 ### Strip Specific Configs
 
-The cluster will be accessible from `https://localhost:8282`, but for now will try and redirect to
+The cluster will be accessible from `https://localhost:8282`, but for now will try to redirect to
 `https://localhost/` and error with `ERR_CONNECTION_REFUSED`. This is due to production arguments being
 used by Traefik, swap them in the file *kube-resources/ingress-traefik.yaml* like so:
 ```$xslt
@@ -102,22 +102,22 @@ First install these locally, version number is confirmed to work:
 - [Terraform (v0.11.1)](https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip)
 - [Ansible (v2.8.2)](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-Next unzip all the tar files in *vultr/custom_binaries/*. They need to go in the follow locations:
+Next unzip all the tar files in *vultr/custom_binaries/*. They need to go in the following locations:
 - *packer_binary.tgz* to *vultr/packer* or else relative links won't work.
 - *terraform-provider-vplus.tgz* and *terraform-provider-vultr.tgz* to *.terraform.d/plugins/*, see https://www.terraform.io/docs/plugins/basics.html
 
 #### Explanation
 Reason Kniche has custom binaries is that the Packer Vultr plugin https://github.com/dradtke/packer-builder-vultr lacks any releases.
-Additionally the Terraform Vultr provider used https://github.com/squat/terraform-provider-vultr doesn't have
+Additionally, the Terraform Vultr provider used https://github.com/squat/terraform-provider-vultr doesn't have
 reserved ips as a data source. I took the time to create my a custom provider (source in *vultr/custom_provider/*)
 that gets reserved ips as a data source. The main provider also needs a patch to use the data though, so the file
-in *vultr/custom_provider/patches* has to be copied over before compiling a new version of it. Hence the need
+in *vultr/custom_provider/patches* has to be copied over before compiling a new version of it. Therefore, the need
 for all three binaries.
 
 ### Revert Configurations
 
-If you changed anything in a the previous "Strip Specific Configs" step, make sure to change Traefik's args back 
-when heading into production. Also substitute your host url for each ingress.  
+If you changed anything in the previous "Strip Specific Configs" step, make sure to change Traefik's args back 
+when heading into production. Also, substitute your host url for each ingress.  
 
 ### Build
 
@@ -134,14 +134,14 @@ will be pretty evident.
 These modifications are recommended for *vultr/provision.tf* 
 
 The `vplus_reserved_ip` data resource can be removed, if DNS isn't handled by having records pointing
-at a permanently reserved IP. I choose to setup my domain's DNS to point at an reserved IP so its possible
+at a permanently reserved IP. I choose to setup my domain's DNS to point at a reserved IP so its possible
 to destroy/create clusters at will without waiting for DNS to propagate.
 
 Change the plan/region for Vultr if wanted.
 
 ### Provision servers
 
-Finally the command `VULTR_API_KEY=[Your API Key] terraform apply -auto-approve` will setup your cluster if everything goes well.
+Finally, the command `VULTR_API_KEY=[Your API Key] terraform apply -auto-approve` will setup your cluster if everything goes well.
 (Note: due to IP changes nodes may have to be manually rejoined. Deleting the master server and retrying can also work but is even more hacky)
 
 `VULTR_API_KEY=[Your API Key] terraform destroy -force` naturally brings the cluster down.
@@ -183,9 +183,9 @@ resources needed by Traefik in high availability mode for when that gets fixed.
 Goal of Kniche is to use k3s in a substantial way. I've felt that Kubernetes isn't
 covered practically online and full deployments rare. There are too many tutorials
 that go `helm install blah` and not enough of the gritty details. So I decided to
-create this, hopefully as something good enough to grow from.   
+create this, hopefully as something good enough to grow from. 🌱  
 
-I developed all this mainly as a learning experience so I would recommend using it for anything serious.
+I developed all this mainly as a learning experience, so I would recommend using it for anything serious.
 Although most parts are decently developed, plenty can be done to tighten up security, document, add features,
 fix, etc. 
 
