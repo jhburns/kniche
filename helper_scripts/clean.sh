@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# 2nd step (wait a bit after 1st): taint/label nodes and delete traefik preinstalled
+# Due to hte fact that k3d is bugged and it can't be setup normally otherwise
 
 # IMPORTANT: Makes sure the ingress controller containers can go somewhere
 kubectl label nodes k3d-k3s-default-worker-0 type=entry

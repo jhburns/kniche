@@ -6,7 +6,7 @@
       name: "k3s.{{ play_hosts[0] }}"
   - name: Copy hosts file
     template:
-      src: ./service-configs/hosts.j2
+      src: ./templates/hosts.j2
       dest: /etc/hosts
       owner: root
       group: root
@@ -26,11 +26,6 @@
 - hosts: master
   remote_user: root
   tasks:
-  - name: Delete previous session's master output # A bit of cheese so that worker, entry wait properly
-    local_action:                                 # Chance this won't happen first, so delete the file manually to be safe
-      module: file
-      path: ../secrets/master_output.json
-      state: absent
   - name: Download linkerd binary x64
     get_url:
       url: https://github.com/linkerd/linkerd2/releases/download/stable-2.3.1/linkerd2-cli-stable-2.3.1-linux
@@ -40,7 +35,7 @@
       mode: 0755
   - name: Copy over k3s system file
     copy:
-      src: ./service-configs/k3s.service
+      src: ./templates/k3s.service
       dest: /etc/systemd/system/k3s.service
       owner: root
       group: root
@@ -78,6 +73,50 @@
     retries: 100
     delay: 10
     until: cmd_res.stdout_lines | list | count == 4
+  - name: Assign taint to entry node
+    command: k3s kubectl label nodes k3s.entry type=entry
+  - name: Load local auth file
+    include_vars:
+      file: ../secrets/auth.json
+      name: auth
+  - name: Generate auth file # With default username = user
+    command: htpasswd -cbB ./auth user {{ auth.password }}
+  - name: Copy kubernetes resource files
+    copy:
+      src: ../kube-resources/
+      dest: ./kube-resources/
+      directory_mode: yes
+      owner: root
+      group: root
+      mode: 0755
+  - name: Symlink k3s kubectl so linkerd can check it
+    file:
+      src: k3s
+      dest: /usr/local/bin/kubectl
+      state: link
+  - name: Install linkerd
+    shell: linkerd install | k3s kubectl apply -f -
+    environment:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  - name: Wait for linkerd to finish installing # May take a while
+    shell: linkerd check --expected-version $(linkerd version --client --short)
+    environment:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  - name: Install resources
+    shell: linkerd inject ./kube-resources | k3s kubectl apply -f -
+    environment:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  - name: Create secrets needed by each ingress
+    command: k3s kubectl create secret generic mysecret --from-file auth --namespace={{ item }}
+    loop:
+      - whoami
+      - kube-system
+      - linkerd
+  - name: Delete output file
+    local_action:
+      module: file
+      dest: ../secrets/master_output.json
+      state: absent
 
 - hosts: entry, worker
   remote_user: root
@@ -92,14 +131,14 @@
       name: master_vars
   - name: Copy K3s service file
     template:
-      src: ./service-configs/k3s-agent.service.j2
+      src: ./templates/k3s-agent.service.j2
       dest: /etc/systemd/system/k3s-agent.service
       owner: root
       group: root
       mode: 0755
   - name: Copy K3s enviroment file
     template:
-      src: ./service-configs/k3s-agent.service.env.j2
+      src: ./templates/k3s-agent.service.env.j2
       dest: /etc/systemd/system/k3s-agent.service.env
       owner: root
       group: root
@@ -108,7 +147,13 @@
     systemd:
       name: k3s-agent
       state: restarted
+      daemon_reload: yes
       enabled: yes
+  - name: Wait for master to remove output, signalling clustering is finished
+    local_action: # Another hack, required due to asyncrony of ansible
+      module: wait_for
+      path: ../secrets/master_output.json
+      state: absent
 
 - hosts: entry
   remote_user: root

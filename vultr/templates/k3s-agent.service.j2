@@ -4,7 +4,7 @@ Documentation=https://k3s.io
 After=network.target
 
 [Service]
-Type=notify
+Type=exec
 EnvironmentFile=/etc/systemd/system/k3s-agent.service.env
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 1st step: delete cluster, and recreate it, then wait until kube config is available
 
 k3d delete
 k3d create --api-port 6551 --publish 8282:30666 --workers 3
@@ -12,6 +13,7 @@ do
 done
 
 # Sets both bash and fish var
+# Shell specific, change to reflect yours
 export KUBECONFIG=/home/hat/.config/k3d/k3s-default/kubeconfig.yaml
 echo "set -Ux KUBECONFIG /home/hat/.config/k3d/k3s-default/kubeconfig.yaml" | fish
 

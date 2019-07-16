@@ -114,8 +114,8 @@ spec:
           httpGet:
             path: /ping
             port: 8080
-        initialDelaySeconds: 3
-        periodSeconds: 3
+          initialDelaySeconds: 3
+          periodSeconds: 3
         volumeMounts:
         - mountPath: /srv/config/acme/
           name: acme

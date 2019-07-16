@@ -10,8 +10,12 @@ ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStart=/usr/local/bin/k3s \
     server \
-	'--no-deploy' \
-	'traefik' \
+    '--no-deploy' \
+    'traefik' \
+    '--node-label' \
+    'node-role.kubernetes.io/master=true' \
+    '--node-taint' \
+    'node-role.kubernetes.io/master=:NoSchedule' \
 KillMode=process
 Delegate=yes
 LimitNOFILE=infinity
