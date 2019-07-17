@@ -48,6 +48,7 @@ resource "vultr_instance" "master" {
   region_id         = "${data.vultr_region.silicon_valley.id}"
   plan_id           = "${data.vultr_plan.starter.id}"
   snapshot_id       = "${data.vultr_snapshot.master.id}"
+  firewall_group_id = "${vultr_firewall_group.others_no_ssh.id}"
   hostname          = "master"
   tag               = "k3s-master"
 }
@@ -58,6 +59,7 @@ resource "vultr_instance" "entry" {
   plan_id           = "${data.vultr_plan.starter.id}"
   snapshot_id       = "${data.vultr_snapshot.entry.id}"
   reserved_ip       = "${data.vplus_reserved_ip.entry.id}" # Using our custom data source here
+  firewall_group_id = "${vultr_firewall_group.entry_worker_no_ssh.id}"
   hostname          = "entry"
   tag               = "k3s-worker-entry"
 }
@@ -67,6 +69,7 @@ resource "vultr_instance" "worker" {
   region_id         = "${data.vultr_region.silicon_valley.id}"
   plan_id           = "${data.vultr_plan.starter.id}"
   snapshot_id       = "${data.vultr_snapshot.worker.id}"
+  firewall_group_id = "${vultr_firewall_group.others_no_ssh.id}"
   hostname          = "worker"
   tag               = "k3s-worker"
 }
